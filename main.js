@@ -1,6 +1,5 @@
 var mediaStream;
 
-
 const downloadLink = document.createElement('a');
 downloadLink.textContent = 'Clique aqui para baixar';
 document.body.appendChild(downloadLink);
@@ -35,9 +34,25 @@ function tirarFoto() {
     const fotoDiv = document.getElementById('foto');
     fotoDiv.style.backgroundImage = `url(${imagedataURL})`;
 
+    // Armazenando o link da imagem no localStorage
+    localStorage.setItem('imagemDataURL', imagedataURL);
+
     // Atualizando os atributos do link para download
     downloadLink.href = imagedataURL;
     downloadLink.download = 'foto.png';
+}
+
+function apagarFoto() {
+    // Removendo a imagem do localStorage
+    localStorage.removeItem('imagemDataURL');
+
+    // Removendo a imagem do background da div e trocando para "foto.png"
+    const fotoDiv = document.getElementById('foto');
+    fotoDiv.style.backgroundImage = 'url("foto.png")';
+
+    // Atualizando os atributos do link para download (removendo o link)
+    downloadLink.removeAttribute('href');
+    downloadLink.removeAttribute('download');
 }
 
 function fechar() {
@@ -47,3 +62,17 @@ function fechar() {
     mediaStream = null;
 }
 
+// Função para verificar se há uma imagem armazenada no localStorage
+function verificarImagemLocalStorage() {
+    const imagemArmazenada = localStorage.getItem('imagemDataURL');
+    if (imagemArmazenada) {
+        const fotoDiv = document.getElementById('foto');
+        fotoDiv.style.backgroundImage = `url(${imagemArmazenada})`;
+        // Atualizando os atributos do link para download ao carregar a imagem armazenada
+        downloadLink.href = imagemArmazenada;
+        downloadLink.download = 'foto.png';
+    }
+}
+
+// Chamar a função de verificação quando a página é carregada
+verificarImagemLocalStorage();
